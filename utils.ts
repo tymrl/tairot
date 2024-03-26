@@ -65,7 +65,7 @@ export const createShuffledDeck = () => {
   return shuffledDeck;
 };
 
-interface Card {
+export interface Card {
   name: string;
   imageUrl: string;
 }
