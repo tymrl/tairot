@@ -1,3 +1,5 @@
+import { OPENAI_API_KEY } from "@env";
+
 export const createShuffledDeck = () => {
   const suits = ["Wands", "Cups", "Swords", "Pentacles"];
   const ranks = [
@@ -78,4 +80,33 @@ export const nameToCard = (name: string): Card => {
       name.toLocaleLowerCase().replaceAll(" ", "-") +
       ".jpg",
   };
+};
+
+export const sendToChatGPT = async (message: String) => {
+  const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+
+  try {
+    const response = await fetch(OPENAI_API_URL, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + OPENAI_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo-0125",
+        messages: [{ role: "user", content: message }],
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error("Error contacting OpenAI:", error);
+    throw error;
+  }
 };
