@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Image, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Text, View } from "@/components/Themed";
-import { createShuffledDeck } from "@/utils";
+import { Card, createShuffledDeck } from "@/utils";
 import { OPENAI_API_KEY } from "@env";
 
 const TabOneScreen = () => {
@@ -26,7 +26,7 @@ const TabOneScreen = () => {
   };
 
   useEffect(() => {
-    fetchChatGPTResponse(card.name);
+    fetchChatGPTResponse(buildCardPrompt(card));
   }, []);
 
   return (
@@ -48,6 +48,9 @@ const TabOneScreen = () => {
   );
 };
 
+const buildCardPrompt = (card: Card) => {
+  return `Act as a tarot card reader and interpret this tarot card: ${card.name}`;
+};
 const sendToChatGPT = async (message: String) => {
   const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 
