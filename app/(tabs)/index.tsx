@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Image, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, ScrollView, StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { Card, createShuffledDeck, sendToChatGPT } from "@/utils";
@@ -35,14 +35,9 @@ const TabOneScreen = () => {
         source={{ uri: card.imageUrl }}
         style={{ width: 240, height: 422 }}
       />
-      <ScrollView>
+      <ScrollView style={styles.textContainer}>
         <Text style={styles.text}>{responseText}</Text>
       </ScrollView>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
     </View>
   );
 };
@@ -62,10 +57,8 @@ const styles = StyleSheet.create({
     padding: 12,
     fontWeight: "bold",
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+  textContainer: {
+    padding: 24,
   },
   text: {
     fontSize: 16,
