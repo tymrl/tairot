@@ -19,7 +19,12 @@ const InputScreen: React.FC<InputScreenProps> = ({ navigation }) => {
           Welcome to Tairot. What are you seeking wisdom on today?
         </Text>
       </View>
-      <TextInput style={styles.textInput} multiline={true} value={userText} />
+      <TextInput
+        style={styles.textInput}
+        multiline={true}
+        value={userText}
+        onChangeText={setUserText}
+      />
       <Button
         title={"Draw a card"}
         onPress={() => navigation.navigate("TarotScreen", { userText })}

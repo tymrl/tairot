@@ -63,13 +63,6 @@ const styles = StyleSheet.create({
     padding: 12,
     fontWeight: "bold",
   },
-  textInput: {
-    width: "80%",
-    padding: 6,
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 12,
-  },
   textContainer: {
     padding: 24,
   },
