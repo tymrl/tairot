@@ -1,10 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Image, ScrollView, StyleSheet } from "react-native";
+import { Button, Image, ScrollView, StyleSheet, TextInput } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
 import { Text, View } from "@/components/Themed";
 import { Card, createShuffledDeck, sendToChatGPT } from "@/utils";
 
-const TabOneScreen = () => {
+const Stack = createStackNavigator();
+
+const InputScreen = () => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.textContainer}>
+        <Text style={styles.text}>
+          Welcome to Tairot. What are you seeking wisdom on today?
+        </Text>
+      </View>
+      <TextInput style={styles.textInput} multiline={true}></TextInput>
+      <Button title={"Draw a card"}></Button>
+    </View>
+  );
+};
+
+const TarotScreen = () => {
   const [card, setCard] = useState(createShuffledDeck()[0]);
   const [responseText, setResponseText] = useState("Loading...");
 
@@ -46,6 +64,17 @@ const buildCardPrompt = (card: Card) => {
   return `Act as a tarot card reader and interpret this tarot card: ${card.name}`;
 };
 
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="InputScreen" component={InputScreen} />
+        <Stack.Screen name="TarotScreen" component={TarotScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -57,6 +86,13 @@ const styles = StyleSheet.create({
     padding: 12,
     fontWeight: "bold",
   },
+  textInput: {
+    width: "80%",
+    padding: 6,
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 12,
+  },
   textContainer: {
     padding: 24,
   },
@@ -66,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TabOneScreen;
+export default App;
