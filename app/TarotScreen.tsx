@@ -1,43 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Button, Image, ScrollView, StyleSheet, TextInput } from "react-native";
-import { NavigationContainer, RouteProp } from "@react-navigation/native";
-import {
-  StackNavigationProp,
-  createStackNavigator,
-} from "@react-navigation/stack";
+import { Image, ScrollView, StyleSheet } from "react-native";
+import { RouteProp } from "@react-navigation/native";
 
 import { Text, View } from "@/components/Themed";
 import { Card, createShuffledDeck, sendToChatGPT } from "@/utils";
-
-type RootStackParamList = {
-  InputScreen: undefined;
-  TarotScreen: { userText: string };
-};
-
-const Stack = createStackNavigator<RootStackParamList>();
-
-type InputScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, "InputScreen">;
-};
-
-const InputScreen: React.FC<InputScreenProps> = ({ navigation }) => {
-  const [userText, setUserText] = React.useState("");
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.textContainer}>
-        <Text style={styles.text}>
-          Welcome to Tairot. What are you seeking wisdom on today?
-        </Text>
-      </View>
-      <TextInput style={styles.textInput} multiline={true} value={userText} />
-      <Button
-        title={"Draw a card"}
-        onPress={() => navigation.navigate("TarotScreen", { userText })}
-      />
-    </View>
-  );
-};
+import { RootStackParamList } from "./navigation";
 
 type TarotScreenProps = {
   route: RouteProp<RootStackParamList, "TarotScreen">;
@@ -85,17 +52,6 @@ const TarotScreen: React.FC<TarotScreenProps> = ({ route }) => {
   );
 };
 
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="InputScreen" component={InputScreen} />
-        <Stack.Screen name="TarotScreen" component={TarotScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -123,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default TarotScreen;
