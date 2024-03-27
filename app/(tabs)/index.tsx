@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Button, Image, ScrollView, StyleSheet, TextInput } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer, RouteProp } from "@react-navigation/native";
+import {
+  StackNavigationProp,
+  createStackNavigator,
+} from "@react-navigation/stack";
 
 import { Text, View } from "@/components/Themed";
 import { Card, createShuffledDeck, sendToChatGPT } from "@/utils";
 
-const Stack = createStackNavigator();
+type RootStackParamList = {
+  InputScreen: undefined;
+  TarotScreen: { userText: string };
+};
 
-const InputScreen = () => {
+const Stack = createStackNavigator<RootStackParamList>();
+
+type InputScreenProps = {
+  navigation: StackNavigationProp<RootStackParamList, "InputScreen">;
+};
+
+const InputScreen: React.FC<InputScreenProps> = ({ navigation }) => {
+  const [userText, setUserText] = React.useState("");
+
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
@@ -16,15 +30,26 @@ const InputScreen = () => {
           Welcome to Tairot. What are you seeking wisdom on today?
         </Text>
       </View>
-      <TextInput style={styles.textInput} multiline={true}></TextInput>
-      <Button title={"Draw a card"}></Button>
+      <TextInput style={styles.textInput} multiline={true} value={userText} />
+      <Button
+        title={"Draw a card"}
+        onPress={() => navigation.navigate("TarotScreen", { userText })}
+      />
     </View>
   );
 };
 
-const TarotScreen = () => {
+type TarotScreenProps = {
+  route: RouteProp<RootStackParamList, "TarotScreen">;
+};
+
+const TarotScreen: React.FC<TarotScreenProps> = ({ route }) => {
   const [card, setCard] = useState(createShuffledDeck()[0]);
   const [responseText, setResponseText] = useState("Loading...");
+
+  const buildCardPrompt = (card: Card) => {
+    return `Act as a tarot card reader and interpret this tarot card: ${card.name}. Interpet it in the following context, as specified by the querent: ${route.params.userText}`;
+  };
 
   const fetchChatGPTResponse = async (message: String) => {
     try {
@@ -36,15 +61,15 @@ const TarotScreen = () => {
     }
   };
 
-  useEffect(() => {
-    setResponseText(
-      "Drawing the Five of Wands during the new moon signifies a period of internal and external challenges that surround you, marked by conflict, competition, and the potential for creative breakthroughs. This time is ripe for growth, urging you to confront and embrace these tensions to forge resilience and innovation. It's a call to examine your internal struggles and external contests, not as barriers, but as opportunities to clarify your desires, ambitions, and paths forward. Embrace this energy to set powerful intentions for the new cycle, allowing these challenges to catalyze your evolution and guide you towards realizing your true potential."
-    );
-  });
-
   // useEffect(() => {
-  //   fetchChatGPTResponse(buildCardPrompt(card));
-  // }, []);
+  //   setResponseText(
+  //     "Drawing the Five of Wands during the new moon signifies a period of internal and external challenges that surround you, marked by conflict, competition, and the potential for creative breakthroughs. This time is ripe for growth, urging you to confront and embrace these tensions to forge resilience and innovation. It's a call to examine your internal struggles and external contests, not as barriers, but as opportunities to clarify your desires, ambitions, and paths forward. Embrace this energy to set powerful intentions for the new cycle, allowing these challenges to catalyze your evolution and guide you towards realizing your true potential."
+  //   );
+  // });
+
+  useEffect(() => {
+    fetchChatGPTResponse(buildCardPrompt(card));
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -58,10 +83,6 @@ const TarotScreen = () => {
       </ScrollView>
     </View>
   );
-};
-
-const buildCardPrompt = (card: Card) => {
-  return `Act as a tarot card reader and interpret this tarot card: ${card.name}`;
 };
 
 const App = () => {
